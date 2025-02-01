@@ -42,7 +42,7 @@ function syncQuotes(serverQuotes)
     quotes = newQuotes;
     saveQuotes();
     showRandomQuotes();
-    alert("Quotes synced with the server.");
+    alert("Quotes synced with server!");
 }
 
 async function postQuoteToServer(newQuote)
