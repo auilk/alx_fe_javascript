@@ -19,7 +19,7 @@ async function fetchQuotesFromServer()
             category: "General"
         }));
 
-        syncDataWithServer(serverQuotes);
+        syncQuotes(serverQuotes);
     }
     catch (error)
     {
@@ -27,7 +27,7 @@ async function fetchQuotesFromServer()
     }
 }
 
-function syncDataWithServer(serverQuotes)
+function syncQuotes(serverQuotes)
 {
     const newQuotes = [...quotes];
     serverQuotes.forEach(serverQuote =>
@@ -43,6 +43,42 @@ function syncDataWithServer(serverQuotes)
     saveQuotes();
     showRandomQuotes();
     // alert("Quotes synced with the server.");
+}
+
+async function postQuoteToServer(newQuote)
+{
+    try
+    {
+        const response = await fetch(API_URL,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: newQuote.text,
+                body: newQuote.text,
+                userId: 1              
+            })
+        });
+
+        if (response.ok)
+        {
+            const serverResponse = await response.json();
+            console.log("Posted new quote to the server:", serverResponse);
+            alert("Quote added to the server successfully!");
+        }
+        else
+        {
+            console.error("Error posting quote to the server:", response.status);
+            alert("Failed to post the quote to the server.");
+        }
+    }
+    catch (error)
+    {
+        console.error("Error posting quote:", error);
+        alert("An error occurred while posting the quote.");
+    }
 }
 
 function showRandomQuotes(filteredQuotes = quotes)
