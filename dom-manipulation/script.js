@@ -1,4 +1,4 @@
-const quotes = [
+let quotes = JSON.parse(localStorage.getItem("quotes")) || [
     { text: "The only way to do great work is to love what you do.", category: "Motivation" },
     { text: "Life is what happens when you're busy making other plans.", category: "Life" },
     { text: "Get busy living or get busy dying.", category: "Inspiration" },
@@ -12,6 +12,8 @@ function showRandomQuote()
 
     const quoteDisplay = document.getElementById("quoteDisplay");
     quoteDisplay.innerHTML = `"${randomQuote.text}" — ${randomQuote.category}`;
+
+    sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
 }
 
 function addQuote()
@@ -27,6 +29,8 @@ function addQuote()
         };
 
         quotes.push(newQuote);
+
+        localStorage.setItem("quotes", JSON.stringify(quotes));
 
         document.getElementById("newQuoteText").value = "";
         document.getElementById("newQuoteCategory").value = "";
@@ -65,9 +69,31 @@ function createAddQuoteForm()
     document.body.appendChild(formContainer);
 }
 
+function exportToJson()
+{
+    const jsonQuotes = JSON.stringify(quotes, null, 2);
+
+    const blob = new Blob([jsonQuotes], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "quotes.json";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+}
+
+
 document.addEventListener("DOMContentLoaded", function()
 {
     showRandomQuote();
 
     createAddQuoteForm();
+
+    const lastViewedQuote = sessionStorage.getItem("lastViewedQuote");
+    if (lastViewedQuote) {
+        console.log("Last viewed quote:", JSON.parse(lastViewedQuote));
+    }
 });
