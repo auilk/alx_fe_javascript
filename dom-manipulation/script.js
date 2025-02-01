@@ -5,6 +5,43 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
     { text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", category: "Self" }
 ];
 
+const API_URL = "https://jsonplaceholder.typicode.com/posts";
+
+function fetchQuotesFromServer() {
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(data =>
+        {
+            const serverQuotes = data.slice(0, 5).map(item => (
+            {
+                text: item.title,
+                category: "General"
+            }));
+
+            console.log("Fetched server quotes:", serverQuotes);
+            syncDataWithServer(serverQuotes);
+        })
+        .catch(error => console.error("Error fetching server quotes: ", error));
+}
+
+function syncDataWithServer(serverQuotes)
+{
+    const newQuotes = [...quotes];
+    serverQuotes.forEach(serverQuote =>
+    {
+        const existingQuote = newQuotes.find(quote => quote.text === serverQuote.text);
+        if (!existingQuote)
+        {
+            newQuotes.push(serverQuote);
+        }
+    });
+
+    quotes = newQuotes;
+    saveQuotes();
+    showRandomQuotes();
+    // alert("Quotes synced with the server.");
+}
+
 function showRandomQuotes(filteredQuotes = quotes)
 {
     const quoteDisplay = document.getElementById("quoteDisplay");
@@ -69,7 +106,7 @@ function addQuote()
         document.getElementById("newQuoteText").value = "";
         document.getElementById("newQuoteCategory").value = "";
 
-        showRandomQuote();
+        showRandomQuotes();
     }
     else
     {
@@ -169,3 +206,5 @@ document.addEventListener("DOMContentLoaded", function()
         console.log("Last viewed quote:", JSON.parse(lastViewedQuote));
     }
 });
+
+setInterval(fetchQuotesFromServer, 5000);
