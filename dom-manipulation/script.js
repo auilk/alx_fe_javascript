@@ -5,15 +5,49 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
     { text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", category: "Self" }
 ];
 
-function showRandomQuote()
+function showRandomQuotes(filteredQuotes = quotes)
 {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    const randomQuote = quotes[randomIndex];
-
     const quoteDisplay = document.getElementById("quoteDisplay");
-    quoteDisplay.innerHTML = `"${randomQuote.text}" — ${randomQuote.category}`;
+    if (filteredQuotes.length > 0) {
+        const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
+        quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
+    } else {
+        quoteDisplay.textContent = "No quotes available in this category.";
+    }
+}
 
-    sessionStorage.setItem("lastViewedQuote", JSON.stringify(randomQuote));
+function populateCategories()
+{
+    const categoryFilter = document.getElementById("categoryFilter");
+
+    const categories = ["all", ...new Set(quotes.map(quote => quote.category))];
+
+    categoryFilter.innerHTML = "<option value='all'>All Categories</option>";
+
+    categories.forEach(category =>
+    {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+
+    const lastSelectedCategory = localStorage.getItem("lastCategoryFilter");
+    if (lastSelectedCategory)
+    {
+        categoryFilter.value = lastSelectedCategory;
+    }
+}
+
+function filterQuotes()
+{
+    const selectedCategory = document.getElementById("categoryFilter").value;
+
+    const filteredQuotes = selectedCategory === "all" ? quotes : quotes.filter(quote => quote.category === selectedCategory);
+
+    showRandomQuotes(filteredQuotes);
+
+    localStorage.setItem("lastCategoryFilter", selectedCategory);
 }
 
 function addQuote()
@@ -122,11 +156,11 @@ function saveQuotes()
     localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-
-
 document.addEventListener("DOMContentLoaded", function()
 {
-    showRandomQuote();
+    populateCategories();
+
+    showRandomQuotes();
 
     createAddQuoteForm();
 
