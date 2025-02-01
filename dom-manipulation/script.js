@@ -7,21 +7,24 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
 
 const API_URL = "https://jsonplaceholder.typicode.com/posts";
 
-function fetchQuotesFromServer() {
-    fetch(API_URL)
-        .then(response => response.json())
-        .then(data =>
-        {
-            const serverQuotes = data.slice(0, 5).map(item => (
+async function fetchQuotesFromServer()
+{
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        const serverQuotes = data.slice(0, 5).map(item => (
             {
-                text: item.title,
-                category: "General"
-            }));
+            text: item.title,
+            category: "General"
+        }));
 
-            console.log("Fetched server quotes:", serverQuotes);
-            syncDataWithServer(serverQuotes);
-        })
-        .catch(error => console.error("Error fetching server quotes: ", error));
+        syncDataWithServer(serverQuotes);
+    }
+    catch (error)
+    {
+        console.error("Error fetching server quotes:", error);
+    }
 }
 
 function syncDataWithServer(serverQuotes)
