@@ -14,11 +14,8 @@ function showRandomQuote()
     quoteDisplay.innerHTML = `"${randomQuote.text}" — ${randomQuote.category}`;
 }
 
-function addQuote()
+function createAddQuoteForm(newQuoteText, newQuoteCategory)
 {
-    const newQuoteText = document.getElementById('newQuoteText').value;
-    const newQuoteCategory = document.getElementById('newQuoteCategory').value;
-
     if (newQuoteText && newQuoteCategory)
     {
         const newQuote = {
@@ -37,6 +34,15 @@ function addQuote()
     {
         alert("Please fill out both the quote text and category.");
     }
+}
+
+function addQuote()
+
+{
+    const newQuoteText = document.getElementById('newQuoteText').value;
+    const newQuoteCategory = document.getElementById('newQuoteCategory').value;
+
+    createAddQuoteForm(newQuoteText, newQuoteCategory);
 }
 
 document.addEventListener('DOMContentLoaded', showRandomQuote);
