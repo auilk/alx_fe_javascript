@@ -11,7 +11,7 @@ function showRandomQuote()
     const randomQuote = quotes[randomIndex];
 
     const quoteDisplay = document.getElementById('quoteDisplay');
-    quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
+    quoteDisplay.innerHTML = `"${randomQuote.text}" — ${randomQuote.category}`;
 }
 
 function addQuote()
