@@ -71,7 +71,7 @@ async function postQuoteToServer(newQuote)
         else
         {
             console.error("Error posting quote to the server:", response.status);
-            alert("Failed to post the quote to the server.");
+            alert("Failed to post the quote to the server");
         }
     }
     catch (error)
